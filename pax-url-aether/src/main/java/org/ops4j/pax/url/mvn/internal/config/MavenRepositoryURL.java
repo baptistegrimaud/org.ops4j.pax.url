@@ -677,12 +677,10 @@ public class MavenRepositoryURL
         } catch (URISyntaxException e) {
             // masked below
         }
-        if (url.startsWith("file:")) {
-            return url;
-        }
         final int start = url.indexOf("://");
         final int at = url.lastIndexOf('@');
-        if (start == -1 || at < start) {
+        // "///": an empty authority, such as file:///C:/Program Files/, has no user information
+        if (start == -1 || at < start || url.startsWith("/", start + 3)) {
             return url;
         }
         return url.substring(0, start + 3) + "***" + url.substring(at);

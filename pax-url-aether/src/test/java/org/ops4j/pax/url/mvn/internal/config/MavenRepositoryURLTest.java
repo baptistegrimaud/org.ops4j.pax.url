@@ -122,6 +122,8 @@ public class MavenRepositoryURLTest
         assertEquals( "https://***@repo.example.com/maven2@snapshots@id=repository1", MavenRepositoryURL.maskUserInfo( "https://user:secret@repo.example.com/maven2@snapshots@id=repository1" ) );
         assertEquals( "https://***@repo.example.com/maven2/", MavenRepositoryURL.maskUserInfo( "https://me@example.com:secret@repo.example.com/maven2/" ) );
         assertEquals( "ftp://***@repo.example.com/maven2/", MavenRepositoryURL.maskUserInfo( "ftp://user:secret@repo.example.com/maven2/" ) );
+        assertEquals( "file://***@uncshare/c:/users/repository/", MavenRepositoryURL.maskUserInfo( "file://user:secret@uncshare/c:/users/repository/" ) );
+        assertEquals( "file://***@uncshare/c:\\users\\repository\\", MavenRepositoryURL.maskUserInfo( "file://user:secret@uncshare/c:\\users\\repository\\" ) );
 
         assertEquals( "https://repo.example.com/maven2/", MavenRepositoryURL.maskUserInfo( "https://repo.example.com/maven2/" ) );
         assertEquals( "https://repo.example.com/maven2@snapshots@id=repository1", MavenRepositoryURL.maskUserInfo( "https://repo.example.com/maven2@snapshots@id=repository1" ) );
@@ -129,6 +131,7 @@ public class MavenRepositoryURLTest
         assertEquals( "https://repo.example.com/maven2/?user=a@b", MavenRepositoryURL.maskUserInfo( "https://repo.example.com/maven2/?user=a@b" ) );
         assertEquals( "file:///C:/Users/john@corp/repository/", MavenRepositoryURL.maskUserInfo( "file:///C:/Users/john@corp/repository/" ) );
         assertEquals( "file:repository1/", MavenRepositoryURL.maskUserInfo( "file:repository1/" ) );
+        assertEquals( "file://uncshare/c:\\users\\repository\\", MavenRepositoryURL.maskUserInfo( "file://uncshare/c:\\users\\repository\\" ) );
         assertEquals( "file:///C:/Program Files/repository@snapshots", MavenRepositoryURL.maskUserInfo( "file:///C:/Program Files/repository@snapshots" ) );
         assertEquals( "file:///C:\\Users\\john@corp\\repository@snapshots", MavenRepositoryURL.maskUserInfo( "file:///C:\\Users\\john@corp\\repository@snapshots" ) );
     }
