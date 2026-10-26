@@ -7,6 +7,7 @@ import java.net.URI;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class MavenRepositoryURLTest
 {
@@ -58,6 +59,28 @@ public class MavenRepositoryURLTest
         mavenRepo = new MavenRepositoryURL( spec + "@id=repository1" );
         expected = new File( "répositories /répository1/" );
         assertEquals( expected, mavenRepo.getFile() );
+    }
+
+    @Test
+    public void testCredentialsAreRedacted() throws MalformedURLException
+    {
+        MavenRepositoryURL mavenRepo = new MavenRepositoryURL( "https://user:secret@repo.example.com/maven2@id=repository1" );
+        assertEquals( "https://***@repo.example.com/maven2/ {id=repository1}", mavenRepo.toString() );
+        assertEquals( URI.create( "https://user:secret@repo.example.com/maven2/" ), mavenRepo.getURI() );
+
+        mavenRepo = new MavenRepositoryURL( "https://user%40example.com:secret@repo.example.com/maven2@id=repository1" );
+        assertFalse( mavenRepo.toString().contains( "secret" ) );
+        assertFalse( mavenRepo.toString().contains( "user" ) );
+    }
+
+    @Test
+    public void testRedact()
+    {
+        assertEquals( "https://***@repo.example.com/maven2/", MavenRepositoryURL.redact( "https://user:secret@repo.example.com/maven2/" ) );
+        assertEquals( "https://***@repo.example.com:8443/maven2/", MavenRepositoryURL.redact( "https://user@repo.example.com:8443/maven2/" ) );
+        assertEquals( "https://***@repo.example.com/maven2/@id=repository1", MavenRepositoryURL.redact( "https://user:p@ss@repo.example.com/maven2/@id=repository1" ) );
+        assertEquals( "https://repo.example.com/maven2/@id=repository1", MavenRepositoryURL.redact( "https://repo.example.com/maven2/@id=repository1" ) );
+        assertEquals( "file:repository1/@id=repository1", MavenRepositoryURL.redact( "file:repository1/@id=repository1" ) );
     }
 
 }
